@@ -30,8 +30,22 @@ const FreeTest = () => {
   const [table, setTable] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [email, setEmail] = useState("");
 
-  console.log(totalData);
+  // handle calculate eats input field
+  const handleInputChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  // Check input field valid email address
+  const isEmailValid = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  // handle calculate eats score button
+  const handCalculateEatsScore = () => {
+    console.log("Submitting form with email:", email);
+  };
 
   const { register, handleSubmit, reset, errors, formState } = useForm();
 
@@ -420,9 +434,17 @@ const FreeTest = () => {
           {/* #88619A */}
           <div className="flex flex-col justify-center  mb-20 mt-10 items-center">
             <div className="mt-8">
-              <input className="input input-bordered px-20 border-green-600  w-84 mt-8" />
+              <input
+                className="input input-bordered px-20 border-green-600  w-84 mt-8 mb-2"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={handleInputChange}
+              />
             </div>
             <button
+              onClick={handleSubmit}
+              disabled={!email || !isEmailValid(email)}
               className={`px-8 text-xl text-white  btn bg-[#33a474] border-[#33a474] flex items-center gap-4 hover:bg-white hover:text-green-600 text-center py-2`}
             >
               Calculate My EATS Score
