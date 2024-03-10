@@ -22,7 +22,7 @@ const FreeTest = () => {
   );
   const body = encodeURIComponent("https://eatscore.website/free-test");
   const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
-  const [userEmail, setUserEmail] = useState(null);
+  const [userEmail, setUserEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const answerInputRef = useRef(null);
   const [indexNumber, setIndexNum] = useState(-1);
@@ -30,16 +30,16 @@ const FreeTest = () => {
   const [table, setTable] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
 
   // handle calculate eats input field
   const handleInputChange = (e) => {
-    setEmail(e.target.value);
+    setUserEmail(e.target.value);
   };
 
   // Check input field valid email address
-  const isEmailValid = (email) => {
-    return /\S+@\S+\.\S+/.test(email);
+  const isEmailValid = (userEmail) => {
+    return /\S+@\S+\.\S+/.test(userEmail);
   };
 
   // handle calculate eats score button
@@ -217,11 +217,21 @@ const FreeTest = () => {
 
       const newData = {
         allAnswer: allData,
+        email: userEmail,
       };
       const res = await axios.post(
-        "https://16-personality-server.vercel.app/send-user-result",
+        "https://16-personality-server.vercel.app/user-test-result",
         newData
       );
+      console.log(res);
+      if (res.data.insertedId) {
+        Swal.fire({
+          title: "Success!",
+          text: "Your test result saved!",
+          icon: "success",
+          confirmButtonText: "Cool",
+        });
+      }
     }
   };
 
@@ -236,7 +246,6 @@ const FreeTest = () => {
       email: userEmail,
       allAnswer: totalData,
     };
-    // console.log(newData);
     const res = await axios.post(
       "https://16-personality-server.vercel.app/user-test-result",
       newData
@@ -309,7 +318,7 @@ const FreeTest = () => {
       {/* questions part with list */}
 
       <div className="mt-10">
-        <form onSubmit={handleSubmit(onSubmit)} action="">
+        <form onSubmit={handleSubmit(onSubmit)}>
           {questions.map((question, index) => (
             <div key={index} className="my-16">
               <p className="mt-5 text-center text-2xl font-bold text-[#576071] mb-4">
@@ -438,13 +447,13 @@ const FreeTest = () => {
                 className="input input-bordered px-20 border-green-600  w-84 mt-8 mb-2"
                 type="email"
                 placeholder="Enter your email"
-                value={email}
+                value={userEmail}
                 onChange={handleInputChange}
               />
             </div>
             <button
-              onClick={handleSubmit}
-              disabled={!email || !isEmailValid(email)}
+              // onClick={handleSubmit}
+              disabled={!userEmail || !isEmailValid(userEmail)}
               className={`px-8 text-xl text-white  btn bg-[#33a474] border-[#33a474] flex items-center gap-4 hover:bg-white hover:text-green-600 text-center py-2`}
             >
               Calculate My EATS Score
